@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block titulo %}Clientes{% endblock %}
+{% block conteudo %}
+<header class="topo">
+  <h1>Clientes</h1>
+  <a class="btn btn-primario" href="{{ url_for('clientes.novo') }}">Cadastrar cliente</a>
+</header>
+<form method="get" class="busca">
+  <input class="form-control" type="search" name="q" value="{{ busca }}" placeholder="Buscar por nome ou telefone" aria-label="Buscar cliente">
+  <button class="btn btn-secundario" type="submit">Buscar</button>
+</form>
+{% if clientes %}
+<div class="tabela-rolagem">
+<table class="table tabela">
+  <thead><tr><th>Nome</th><th>Telefone</th><th>E-mail</th><th>Situação</th><th></th></tr></thead>
+  <tbody>
+  {% for c in clientes %}
+  <tr class="{{ '' if c.ativo else 'inativo' }}">
+    <td>{{ c.nome }}</td><td>{{ c.telefone }}</td><td>{{ c.email or '' }}</td>
+    <td>{{ 'Ativo' if c.ativo else 'Inativo' }}</td>
+    <td class="acoes-linha">
+      {% if c.ativo %}<a href="{{ url_for('agenda.novo', cliente_id=c.id) }}">Agendar</a>{% endif %}
+      <a href="{{ url_for('clientes.editar', id=c.id) }}">Editar</a>
+      <form method="post" action="{{ url_for('clientes.alternar_ativo', id=c.id) }}"><button type="submit" class="link-botao">{{ 'Inativar' if c.ativo else 'Reativar' }}</button></form>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+  {% with texto = 'Nenhum cliente encontrado com essa busca.' if busca else 'Nenhum cliente cadastrado ainda. Cadastre o primeiro para começar a agendar.' %}{% include "_lista_vazia.html" %}{% endwith %}
+{% endif %}
+{% endblock %}

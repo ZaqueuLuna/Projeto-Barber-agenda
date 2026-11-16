@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+<header class="topo"><h1>{{ titulo }}</h1></header>
+<form method="post" class="formulario">
+  <label class="form-label" for="nome">Nome</label>
+  <input class="form-control mb-3" id="nome" name="nome" value="{{ valores.nome or '' }}" required>
+  <label class="form-label" for="telefone">Telefone (opcional)</label>
+  <input class="form-control mb-3" id="telefone" name="telefone" value="{{ valores.telefone or '' }}">
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6">
+      <label class="form-label" for="hora_inicio">Começa a atender às</label>
+      <input class="form-control" type="time" id="hora_inicio" name="hora_inicio" value="{{ valores.hora_inicio or '' }}" required>
+    </div>
+    <div class="col-sm-6">
+      <label class="form-label" for="hora_fim">Para de atender às</label>
+      <input class="form-control" type="time" id="hora_fim" name="hora_fim" value="{{ valores.hora_fim or '' }}" required>
+    </div>
+  </div>
+  <div class="acoes">
+    <button class="btn btn-primario" type="submit">{{ 'Salvar alterações' if profissional else 'Cadastrar profissional' }}</button>
+    <a class="btn btn-secundario" href="{{ url_for('profissionais.lista') }}">Voltar</a>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titulo %}Agendamento{% endblock %}
+{% block conteudo %}
+<header class="topo">
+  <div>
+    <h1 class="mb-1">{{ ag.cliente.nome }}</h1>
+    <span class="selo selo-{{ ag.status }}">{{ ag.status_texto }}</span>
+  </div>
+</header>
+<dl class="ficha">
+  <dt>Serviço</dt><dd>{{ ag.servico.nome }}</dd>
+  <dt>Profissional</dt><dd>{{ ag.profissional.nome }}</dd>
+  <dt>Data</dt><dd>{{ ag.inicio.date()|data_extenso }}</dd>
+  <dt>Horário</dt><dd>{{ ag.inicio.strftime('%H:%M') }} às {{ ag.fim.strftime('%H:%M') }}</dd>
+  <dt>Valor</dt><dd>{{ ag.preco_cobrado|moeda }}</dd>
+  <dt>Telefone do cliente</dt><dd>{{ ag.cliente.telefone }}</dd>
+  {% if ag.motivo_cancelamento %}<dt>Motivo do cancelamento</dt><dd>{{ ag.motivo_cancelamento }}</dd>{% endif %}
+  <dt>Registrado por</dt><dd>{{ ag.usuario.nome }} em {{ ag.criado_em.strftime('%d/%m/%Y %H:%M') }}</dd>
+</dl>
+
+{% if ag.status == 'agendado' %}
+<div class="acoes">
+  <form method="post" action="{{ url_for('agenda.concluir', id=ag.id) }}">
+    <button class="btn btn-primario" type="submit">Concluir atendimento</button>
+  </form>
+  <a class="btn btn-secundario" href="{{ url_for('agenda.remarcar', id=ag.id) }}">Remarcar</a>
+</div>
+
+<form method="post" action="{{ url_for('agenda.cancelar', id=ag.id) }}" class="formulario cancelar mt-4" data-confirmar="Cancelar este agendamento? O horário ficará livre.">
+  <label class="form-label" for="motivo">Cancelar agendamento</label>
+  <input class="form-control mb-2" id="motivo" name="motivo" placeholder="Motivo, por exemplo: cliente pediu para desmarcar" required>
+  <button class="btn btn-perigo" type="submit">Cancelar agendamento</button>
+</form>
+{% endif %}
+<p class="mt-4"><a href="{{ url_for('agenda.dia', data=ag.inicio.date().isoformat()) }}">Voltar para a agenda</a></p>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+<header class="topo"><h1>{{ titulo }}</h1></header>
+<form method="post" class="formulario" id="form-agendamento">
+  <div class="mb-3">
+    <label class="form-label" for="cliente_id">Cliente</label>
+    <select class="form-select" id="cliente_id" name="cliente_id" required>
+      <option value="">Escolha o cliente</option>
+      {% for c in clientes %}
+      <option value="{{ c.id }}" {{ 'selected' if valores.cliente_id == c.id|string }}>{{ c.nome }} · {{ c.telefone }}</option>
+      {% endfor %}
+    </select>
+    {% if not ag %}<a class="link-apoio" href="{{ url_for('clientes.novo', voltar='agenda') }}">Cliente novo? Cadastrar</a>{% endif %}
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="profissional_id">Profissional</label>
+    <select class="form-select" id="profissional_id" name="profissional_id" required>
+      <option value="">Escolha o profissional</option>
+      {% for p in profissionais %}
+      <option value="{{ p.id }}" {{ 'selected' if valores.profissional_id == p.id|string }}>{{ p.nome }} ({{ p.hora_inicio.strftime('%H:%M') }} às {{ p.hora_fim.strftime('%H:%M') }})</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="servico_id">Serviço</label>
+    <select class="form-select" id="servico_id" name="servico_id" required>
+      <option value="">Escolha o serviço</option>
+      {% for s in servicos %}
+      <option value="{{ s.id }}" data-duracao="{{ s.duracao_min }}" {{ 'selected' if valores.servico_id == s.id|string }}>{{ s.nome }} · {{ s.duracao_min }} min · {{ s.preco|moeda }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="row g-3 mb-2">
+    <div class="col-sm-6">
+      <label class="form-label" for="data">Data</label>
+      <input class="form-control" type="date" id="data" name="data" value="{{ valores.data }}" required>
+    </div>
+    <div class="col-sm-6">
+      <label class="form-label" for="hora">Hora de início</label>
+      <input class="form-control" type="text" id="hora" name="hora" value="{{ valores.hora }}"
+             placeholder="HH:MM" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" inputmode="numeric"
+             title="Hora no formato 24 h, por exemplo 17:20" required>
+    </div>
+  </div>
+  <p class="previsao" id="previsao" aria-live="polite"></p>
+  <div class="acoes">
+    <button class="btn btn-primario" type="submit">{{ botao }}</button>
+    <a class="btn btn-secundario" href="{{ url_for('agenda.dia', data=valores.data) }}">Voltar para a agenda</a>
+  </div>
+</form>
+{% endblock %}

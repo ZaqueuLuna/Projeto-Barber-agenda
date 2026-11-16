@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}Profissionais{% endblock %}
+{% block conteudo %}
+<header class="topo">
+  <h1>Profissionais</h1>
+  <a class="btn btn-primario" href="{{ url_for('profissionais.novo') }}">Cadastrar profissional</a>
+</header>
+{% if profissionais %}
+<div class="tabela-rolagem">
+<table class="table tabela">
+  <thead><tr><th>Nome</th><th>Telefone</th><th>Atende</th><th>Situação</th><th></th></tr></thead>
+  <tbody>
+  {% for p in profissionais %}
+  <tr class="{{ '' if p.ativo else 'inativo' }}">
+    <td>{{ p.nome }}</td><td>{{ p.telefone or '' }}</td>
+    <td>{{ p.hora_inicio.strftime('%H:%M') }} às {{ p.hora_fim.strftime('%H:%M') }}</td>
+    <td>{{ 'Ativo' if p.ativo else 'Inativo' }}</td>
+    <td class="acoes-linha">
+      <a href="{{ url_for('profissionais.editar', id=p.id) }}">Editar</a>
+      <form method="post" action="{{ url_for('profissionais.alternar_ativo', id=p.id) }}"><button type="submit" class="link-botao">{{ 'Inativar' if p.ativo else 'Reativar' }}</button></form>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+  {% with texto = 'Nenhum profissional cadastrado ainda.' %}{% include "_lista_vazia.html" %}{% endwith %}
+{% endif %}
+{% endblock %}

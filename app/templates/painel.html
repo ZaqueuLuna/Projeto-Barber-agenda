@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Painel{% endblock %}
+{% block conteudo %}
+<header class="topo"><h1>Painel</h1></header>
+
+<section class="indicadores">
+  <div class="indicador destaque">
+    <span class="valor">{{ faturamento_dia|moeda }}</span>
+    <span class="rotulo">faturados hoje em {{ concluidos_dia }} atendimento{{ '' if concluidos_dia == 1 else 's' }} concluído{{ '' if concluidos_dia == 1 else 's' }}</span>
+  </div>
+  <div class="indicador">
+    <span class="valor">{{ abertos_dia }}</span>
+    <span class="rotulo">atendimento{{ '' if abertos_dia == 1 else 's' }} ainda por fazer hoje</span>
+  </div>
+  <div class="indicador">
+    <span class="valor">{{ faturamento_mes|moeda }}</span>
+    <span class="rotulo">faturados no mês em {{ concluidos_mes }} atendimento{{ '' if concluidos_mes == 1 else 's' }}</span>
+  </div>
+</section>
+
+<section class="ranking">
+  <h2>Serviços mais vendidos no mês</h2>
+  {% if top_servicos %}
+  <ol>
+    {% for nome, qtd in top_servicos %}
+    <li>
+      <span class="nome">{{ nome }}</span>
+      <span class="barra"><span style="width: {{ (qtd / maior * 100)|round(1) }}%"></span></span>
+      <span class="qtd">{{ qtd }}</span>
+    </li>
+    {% endfor %}
+  </ol>
+  {% else %}
+  <p class="texto-apoio">Nenhum atendimento concluído neste mês ainda. O ranking aparece quando a recepção concluir os primeiros atendimentos.</p>
+  {% endif %}
+</section>
+<p class="texto-apoio">Só atendimentos concluídos entram no faturamento; cancelados ficam de fora.</p>
+{% endblock %}

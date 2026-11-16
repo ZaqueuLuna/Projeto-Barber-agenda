@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titulo %}Serviços{% endblock %}
+{% block conteudo %}
+<header class="topo">
+  <h1>Serviços</h1>
+  <a class="btn btn-primario" href="{{ url_for('servicos.novo') }}">Cadastrar serviço</a>
+</header>
+{% if servicos %}
+<div class="tabela-rolagem">
+<table class="table tabela">
+  <thead><tr><th>Serviço</th><th class="num">Preço</th><th class="num">Duração</th><th>Situação</th><th></th></tr></thead>
+  <tbody>
+  {% for s in servicos %}
+  <tr class="{{ '' if s.ativo else 'inativo' }}">
+    <td>{{ s.nome }}</td><td class="num">{{ s.preco|moeda }}</td><td class="num">{{ s.duracao_min }} min</td>
+    <td>{{ 'Ativo' if s.ativo else 'Inativo' }}</td>
+    <td class="acoes-linha">
+      <a href="{{ url_for('servicos.editar', id=s.id) }}">Editar</a>
+      <form method="post" action="{{ url_for('servicos.alternar_ativo', id=s.id) }}"><button type="submit" class="link-botao">{{ 'Inativar' if s.ativo else 'Reativar' }}</button></form>
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+  {% with texto = 'Nenhum serviço cadastrado. Cadastre corte, barba e os demais serviços com preço e duração.' %}{% include "_lista_vazia.html" %}{% endwith %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titulo %}Usuários{% endblock %}
+{% block conteudo %}
+<header class="topo">
+  <h1>Usuários</h1>
+  <a class="btn btn-primario" href="{{ url_for('usuarios.novo') }}">Criar usuário</a>
+</header>
+<div class="tabela-rolagem">
+<table class="table tabela">
+  <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Situação</th><th></th></tr></thead>
+  <tbody>
+  {% for u in usuarios %}
+  <tr class="{{ '' if u.ativo else 'inativo' }}">
+    <td>{{ u.nome }}</td><td>{{ u.email }}</td><td>{{ u.perfil|capitalize }}</td>
+    <td>{{ 'Ativo' if u.ativo else 'Inativo' }}</td>
+    <td class="acoes-linha">
+      {% if u.id != current_user.id %}
+      <form method="post" action="{{ url_for('usuarios.alternar_ativo', id=u.id) }}"><button type="submit" class="link-botao">{{ 'Inativar' if u.ativo else 'Reativar' }}</button></form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

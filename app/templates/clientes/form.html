@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+<header class="topo"><h1>{{ titulo }}</h1></header>
+<form method="post" class="formulario">
+  <label class="form-label" for="nome">Nome</label>
+  <input class="form-control mb-3" id="nome" name="nome" value="{{ valores.nome or '' }}" required>
+  <label class="form-label" for="telefone">Telefone</label>
+  <input class="form-control mb-3" id="telefone" name="telefone" value="{{ valores.telefone or '' }}" placeholder="(81) 99999-0000" required>
+  <label class="form-label" for="email">E-mail (opcional)</label>
+  <input class="form-control mb-4" type="email" id="email" name="email" value="{{ valores.email or '' }}">
+  <div class="acoes">
+    <button class="btn btn-primario" type="submit">{{ 'Salvar alterações' if cliente else 'Cadastrar cliente' }}</button>
+    <a class="btn btn-secundario" href="{{ url_for('clientes.lista') }}">Voltar</a>
+  </div>
+</form>
+{% endblock %}

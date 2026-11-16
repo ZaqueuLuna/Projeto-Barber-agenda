@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}Criar usuário{% endblock %}
+{% block conteudo %}
+<header class="topo"><h1>Criar usuário</h1></header>
+<form method="post" class="formulario">
+  <label class="form-label" for="nome">Nome</label>
+  <input class="form-control mb-3" id="nome" name="nome" value="{{ valores.nome or '' }}" required>
+  <label class="form-label" for="email">E-mail</label>
+  <input class="form-control mb-3" type="email" id="email" name="email" value="{{ valores.email or '' }}" required>
+  <label class="form-label" for="senha">Senha (mínimo de 6 caracteres)</label>
+  <input class="form-control mb-3" type="password" id="senha" name="senha" minlength="6" required>
+  <label class="form-label" for="perfil">Perfil</label>
+  <select class="form-select mb-4" id="perfil" name="perfil">
+    <option value="recepcionista" {{ 'selected' if valores.perfil == 'recepcionista' }}>Recepcionista: agenda e clientes</option>
+    <option value="administrador" {{ 'selected' if valores.perfil == 'administrador' }}>Administrador: acesso completo</option>
+  </select>
+  <div class="acoes">
+    <button class="btn btn-primario" type="submit">Criar usuário</button>
+    <a class="btn btn-secundario" href="{{ url_for('usuarios.lista') }}">Voltar</a>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block titulo %}Agenda{% endblock %}
+{% block conteudo %}
+<header class="topo">
+  <div>
+    <h1 class="mb-1">{{ dia|data_extenso|capitalize }}</h1>
+    <nav class="navegar-dias">
+      <a href="{{ url_for('agenda.dia', data=anterior.isoformat()) }}">Dia anterior</a>
+      {% if dia != hoje %}<a href="{{ url_for('agenda.dia') }}">Hoje</a>{% endif %}
+      <a href="{{ url_for('agenda.dia', data=proximo.isoformat()) }}">Próximo dia</a>
+      <form class="d-inline" method="get">
+        <input type="date" name="data" value="{{ dia.isoformat() }}" class="form-control form-control-sm d-inline-block w-auto" data-enviar aria-label="Ir para a data">
+      </form>
+    </nav>
+  </div>
+  <a class="btn btn-primario" href="{{ url_for('agenda.novo', data=dia.isoformat()) }}">Novo agendamento</a>
+</header>
+
+{% if not profissionais %}
+  <div class="vazio">
+    <p>Nenhum profissional ativo. Cadastre os profissionais para começar a agendar.</p>
+    {% if current_user.is_admin %}<a class="btn btn-primario" href="{{ url_for('profissionais.novo') }}">Cadastrar profissional</a>{% endif %}
+  </div>
+{% else %}
+  <p class="resumo-dia">{{ total }} atendimento{{ '' if total == 1 else 's' }} marcado{{ '' if total == 1 else 's' }}. Clique em um horário vazio para agendar ou em um atendimento para ver as opções.</p>
+  <div class="grade-rolagem">
+    <div class="grade" style="--colunas: {{ profissionais|length }}; --altura: {{ altura }}px;">
+      <div class="grade-cabecalho"></div>
+      {% for p in profissionais %}
+      <div class="grade-cabecalho">{{ p.nome }}<small>{{ p.hora_inicio.strftime('%H:%M') }} às {{ p.hora_fim.strftime('%H:%M') }}</small></div>
+      {% endfor %}
+
+      <div class="coluna-horas">
+        {% for rotulo, topo in horas %}<span style="top: {{ topo }}px">{{ rotulo }}</span>{% endfor %}
+      </div>
+      {% for p in profissionais %}
+      <div class="coluna" data-profissional="{{ p.id }}" data-data="{{ dia.isoformat() }}"
+           data-inicio="{{ horas[0][0] }}" data-novo="{{ url_for('agenda.novo') }}">
+        {% for b in colunas[p.id] %}
+        <a class="bloco bloco-{{ b.ag.status }}{{ ' bloco-curto' if b.altura < 40 }}" title="{{ b.ag.cliente.nome }} · {{ b.ag.servico.nome }} · {{ b.ag.inicio.strftime('%H:%M') }} às {{ b.ag.fim.strftime('%H:%M') }}" href="{{ url_for('agenda.detalhe', id=b.ag.id) }}"
+           style="top: {{ b.topo }}px; height: {{ b.altura }}px;">
+          <strong>{{ b.ag.cliente.nome }}</strong>
+          <span>{{ b.ag.servico.nome }} · {{ b.ag.inicio.strftime('%H:%M') }} às {{ b.ag.fim.strftime('%H:%M') }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <p class="legenda"><span class="ponto ponto-agendado"></span>Agendado <span class="ponto ponto-concluido"></span>Concluído</p>
+{% endif %}
+{% endblock %}

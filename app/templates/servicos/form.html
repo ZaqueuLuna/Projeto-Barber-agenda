@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+<header class="topo"><h1>{{ titulo }}</h1></header>
+<form method="post" class="formulario">
+  <label class="form-label" for="nome">Nome do serviço</label>
+  <input class="form-control mb-3" id="nome" name="nome" value="{{ valores.nome or '' }}" required>
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6">
+      <label class="form-label" for="preco">Preço (R$)</label>
+      <input class="form-control" id="preco" name="preco" inputmode="decimal" value="{{ valores.preco or '' }}" placeholder="45,00" required>
+    </div>
+    <div class="col-sm-6">
+      <label class="form-label" for="duracao_min">Duração (minutos)</label>
+      <input class="form-control" type="number" id="duracao_min" name="duracao_min" min="5" max="480" step="5" value="{{ valores.duracao_min or '' }}" required>
+    </div>
+  </div>
+  <div class="acoes">
+    <button class="btn btn-primario" type="submit">{{ 'Salvar alterações' if servico else 'Cadastrar serviço' }}</button>
+    <a class="btn btn-secundario" href="{{ url_for('servicos.lista') }}">Voltar</a>
+  </div>
+</form>
+{% endblock %}
